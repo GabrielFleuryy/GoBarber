@@ -2,13 +2,10 @@ package org.system.record;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import org.springframework.format.annotation.DateTimeFormat;
+
 import org.system.model.User;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public record UserRecord(
         @NotBlank
