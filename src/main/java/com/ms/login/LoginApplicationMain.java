@@ -1,13 +1,13 @@
-package org.system;
+package com.ms.login;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Main {
+public class LoginApplicationMain {
 
     public static void main(String[] args) {
-        SpringApplication.run(Main.class, args);
+        SpringApplication.run(LoginApplicationMain.class, args);
     }
 
 }

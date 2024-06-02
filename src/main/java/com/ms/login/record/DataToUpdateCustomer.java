@@ -1,8 +1,8 @@
-package org.system.record;
+package com.ms.login.record;
 
 import jakarta.validation.constraints.NotNull;
 
-public record DataUpdateUser(
+public record DataToUpdateCustomer(
         @NotNull
         Long id,
 

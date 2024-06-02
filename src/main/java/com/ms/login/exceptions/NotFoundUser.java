@@ -1,4 +1,4 @@
-package org.system.exceptions;
+package com.ms.login.exceptions;
 
 public class NotFoundUser extends RuntimeException{
     public NotFoundUser(String message) {
