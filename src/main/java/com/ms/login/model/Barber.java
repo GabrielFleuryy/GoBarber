@@ -1,12 +1,12 @@
 package com.ms.login.model;
 
-import com.ms.login.record.BarberRecord;
 import com.ms.login.record.DataToListBarber;
 import com.ms.login.record.DataToUpdateBarber;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDate;
@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "barbers")
 @Data
+@NoArgsConstructor
 public class Barber {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,20 +27,10 @@ public class Barber {
 
     @Column
     @NotBlank
-    private String username;
+    private String instagram;
 
     @Column
     private LocalDate birthday;
-
-    @Column(unique = true)
-    @Length(max = 60)
-    @NotBlank
-    private String email;
-
-    @Column
-    @NotBlank
-    @Length(max = 60)
-    private String password;
 
     @Column(unique = true)
     @NotBlank
@@ -61,9 +52,9 @@ public class Barber {
     @Column
     private LocalDateTime createdAt;
 
-    public Barber() {
-
-    }
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public DataToListBarber updateData(DataToUpdateBarber data) {
         if(data.name() != null && !data.name().isEmpty()){
@@ -75,7 +66,7 @@ public class Barber {
         }
 
         if(data.username() != null && !data.username().isEmpty()){
-            this.setUsername(data.username());
+            this.setInstagram(data.username());
         }
 
         if(data.style() != null && !data.style().isEmpty()){
@@ -84,6 +75,6 @@ public class Barber {
 
         this.updatedAt = LocalDateTime.now();
 
-        return new DataToListBarber(this.getId(), this.getName(), this.getUsername(), this.getStyle(), this.getPhoneNumber());
+        return new DataToListBarber(this.getId(), this.getName(), this.getInstagram(), this.getStyle(), this.getPhoneNumber());
     }
 }

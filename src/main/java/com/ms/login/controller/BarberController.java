@@ -1,14 +1,17 @@
 package com.ms.login.controller;
 
 import com.ms.login.model.Barber;
+import com.ms.login.model.User;
 import com.ms.login.record.*;
 import com.ms.login.repository.BarberRepository;
+import com.ms.login.service.AuthService;
 import com.ms.login.service.BarberService;
 import com.ms.login.service.CustomerService;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
+import lombok.extern.java.Log;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -28,15 +30,22 @@ public class BarberController {
     @Autowired
     private BarberService barberService;
 
+    @Autowired
+    private AuthService authService;
+
     @PostMapping("/new-barber")
     @Transactional
     public ResponseEntity<DataToListBarber> newBarber(@RequestBody @Valid BarberRecord barberRecord, UriComponentsBuilder uriBuilder) {
-        var newBarber = new Barber();
-        BeanUtils.copyProperties(barberRecord, newBarber);
+        User user = authService.newUser(new LoginRecord(barberRecord.user()));
 
-        var uri = uriBuilder.path("barbers/{id}").buildAndExpand(newBarber.getId()).toUri();
+        Barber barber = new Barber();
 
-        return  ResponseEntity.created(uri).body(barberService.newBarber(newBarber));
+        BeanUtils.copyProperties(barberRecord, barber);
+        barber.setUser(user);
+
+        var uri = uriBuilder.path("barbers/{id}").buildAndExpand(barber.getId()).toUri();
+
+        return  ResponseEntity.created(uri).body(barberService.newBarber(barber));
     }
 
     @GetMapping("/get-barber/{id}")

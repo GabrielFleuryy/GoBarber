@@ -5,6 +5,7 @@ import com.ms.login.record.DataToListCustomer;
 import com.ms.login.record.DataToUpdateCustomer;
 import com.ms.login.record.CustomerRecord;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "customers")
 @Data
+@NoArgsConstructor
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,10 +42,6 @@ public class Customer {
 
     @Column
     private LocalDateTime updatedAt;
-
-    public Customer() {
-
-    }
 
     public Customer(CustomerRecord customer){
         this.setName(customer.name());
