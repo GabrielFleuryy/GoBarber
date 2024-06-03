@@ -1,7 +1,7 @@
 package com.ms.login.service;
 
 import com.ms.login.model.User;
-import com.ms.login.record.LoginRecord;
+import com.ms.login.record.LoginDTO;
 import com.ms.login.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,7 +22,7 @@ public class AuthService implements UserDetailsService {
         return repository.findByLogin(username);
     }
 
-    public User newUser(LoginRecord login){
+    public User newUser(LoginDTO login){
         var user = new User(login.login(), passwordEncoder.encode(login.password()));
 
         return repository.save(user);

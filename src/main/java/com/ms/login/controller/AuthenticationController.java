@@ -1,6 +1,6 @@
 package com.ms.login.controller;
 
-import com.ms.login.record.LoginRecord;
+import com.ms.login.record.LoginDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +19,8 @@ public class AuthenticationController {
     private AuthenticationManager manager;
 
     @PostMapping
-    public ResponseEntity<?> login(@RequestBody @Valid LoginRecord loginRecord ){
-        var token = new UsernamePasswordAuthenticationToken(loginRecord.login(), loginRecord.password());
+    public ResponseEntity<?> login(@RequestBody @Valid LoginDTO loginDTO){
+        var token = new UsernamePasswordAuthenticationToken(loginDTO.login(), loginDTO.password());
         var authentication = manager.authenticate(token);
 
         return ResponseEntity.ok().build();

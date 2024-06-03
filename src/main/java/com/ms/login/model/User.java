@@ -23,9 +23,10 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long userId;
 
     @NotBlank
+    @Column(unique = true)
     private String login;
 
     @NotBlank
@@ -33,6 +34,9 @@ public class User implements UserDetails {
 
     @OneToOne(mappedBy = "user")
     private Barber barber;
+
+    @OneToOne(mappedBy = "user")
+    private Customer customer;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -43,7 +47,6 @@ public class User implements UserDetails {
     public String getUsername() {
         return login;
     }
-
 
     @Override
     public boolean isAccountNonExpired() {

@@ -1,17 +1,14 @@
 package com.ms.login.controller;
 
 import com.ms.login.model.Barber;
-import com.ms.login.model.User;
 import com.ms.login.record.*;
 import com.ms.login.repository.BarberRepository;
 import com.ms.login.service.AuthService;
 import com.ms.login.service.BarberService;
-import com.ms.login.service.CustomerService;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
-import lombok.extern.java.Log;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,21 +32,22 @@ public class BarberController {
 
     @PostMapping("/new-barber")
     @Transactional
-    public ResponseEntity<DataToListBarber> newBarber(@RequestBody @Valid BarberRecord barberRecord, UriComponentsBuilder uriBuilder) {
-        User user = authService.newUser(new LoginRecord(barberRecord.user()));
+    public ResponseEntity<ListBarberDTO> newBarber(@RequestBody @Valid BarberDTO barberDTO, UriComponentsBuilder uriBuilder) {
+        var user = authService.newUser(new LoginDTO(barberDTO.user()));
 
-        Barber barber = new Barber();
+        var barber = new Barber();
 
-        BeanUtils.copyProperties(barberRecord, barber);
+        BeanUtils.copyProperties(barberDTO, barber);
+
         barber.setUser(user);
 
-        var uri = uriBuilder.path("barbers/{id}").buildAndExpand(barber.getId()).toUri();
+        var uri = uriBuilder.path("barbers/{id}").buildAndExpand(barber.getBarberId()).toUri();
 
         return  ResponseEntity.created(uri).body(barberService.newBarber(barber));
     }
 
     @GetMapping("/get-barber/{id}")
-    public ResponseEntity<DataToListBarber> getBarber(@PathVariable Long id){
+    public ResponseEntity<ListBarberDTO> getBarber(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(barberService.getBarber(id));
     }
 
@@ -60,7 +58,7 @@ public class BarberController {
 
     @PutMapping("update-barber")
     @Transactional
-    public ResponseEntity<?> updateCustomer(@RequestBody DataToUpdateBarber barber){
+    public ResponseEntity<?> updateCustomer(@RequestBody ListBarberDTO barber){
         return ResponseEntity.ok(barberService.updateBarber(barber));
     }
 

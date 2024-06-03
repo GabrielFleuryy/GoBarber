@@ -1,9 +1,7 @@
 package com.ms.login.model;
 
 import jakarta.persistence.*;
-import com.ms.login.record.DataToListCustomer;
-import com.ms.login.record.DataToUpdateCustomer;
-import com.ms.login.record.CustomerRecord;
+import com.ms.login.record.ListCustomerDTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,10 +15,7 @@ import java.time.LocalDateTime;
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(unique = true)
-    private String email;
+    private Long customerId;
 
     @Column
     private String name;
@@ -32,9 +27,6 @@ public class Customer {
     private String phoneNumber;
 
     @Column
-    private String password;
-
-    @Column
     private String role;
 
     @Column
@@ -43,18 +35,11 @@ public class Customer {
     @Column
     private LocalDateTime updatedAt;
 
-    public Customer(CustomerRecord customer){
-        this.setName(customer.name());
-        this.setEmail(customer.email());
-        this.setPassword(customer.password());
-        this.setRole(customer.role());
-        this.setBirthday(customer.birthday());
-        this.setPhoneNumber(customer.phoneNumber());
-        this.setCreatedAt(LocalDateTime.now());
-        this.setUpdatedAt(LocalDateTime.now());
-    }
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    public DataToListCustomer updateData(DataToUpdateCustomer data) {
+    public ListCustomerDTO updateData(ListCustomerDTO data) {
         if(data.name() != null && !data.name().isEmpty()){
             this.setName(data.name());
         }
@@ -62,6 +47,6 @@ public class Customer {
         if(data.phoneNumber() != null && !data.phoneNumber().isEmpty()){
             this.setPhoneNumber(data.phoneNumber());
         }
-        return new DataToListCustomer(this.getId(), this.getName(), this.getPhoneNumber());
+        return new ListCustomerDTO(this.getCustomerId(), this.getName(), this.getPhoneNumber());
     }
 }

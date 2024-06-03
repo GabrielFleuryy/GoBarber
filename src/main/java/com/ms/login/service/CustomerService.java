@@ -1,10 +1,7 @@
 package com.ms.login.service;
 
-import com.ms.login.model.Barber;
 import com.ms.login.model.Customer;
-import com.ms.login.record.DataToListBarber;
-import com.ms.login.record.DataToListCustomer;
-import com.ms.login.record.DataToUpdateCustomer;
+import com.ms.login.record.ListCustomerDTO;
 import com.ms.login.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,29 +15,29 @@ public class CustomerService {
     private CustomerRepository customerRepository;
 
 
-    public DataToListCustomer newCustomer(Customer customer){
+    public ListCustomerDTO newCustomer(Customer customer){
         customer.setCreatedAt(LocalDateTime.now());
         customerRepository.save(customer);
 
-        return new DataToListCustomer(customer);
+        return new ListCustomerDTO(customer);
     }
 
-    public DataToListCustomer getCustomer(Long id) {
+    public ListCustomerDTO getCustomer(Long id) {
         Customer customer = customerRepository.getReferenceById(id);
 
-        return new DataToListCustomer(customer);
+        return new ListCustomerDTO(customer);
     }
 
-    public DataToListCustomer updateCustomer(DataToUpdateCustomer data) {
+    public ListCustomerDTO updateCustomer(ListCustomerDTO data) {
         Customer customer = customerRepository.getReferenceById(data.id());
-
+        customer.setUpdatedAt(LocalDateTime.now());
        return customer.updateData(data);
     }
 
     public void deleteCustomer(Long id) {
         Customer customer = customerRepository.getReferenceById(id);
 
-        customerRepository.deleteById(customer.getId());
+        customerRepository.deleteById(customer.getCustomerId());
     }
 
 }

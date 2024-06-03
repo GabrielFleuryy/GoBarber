@@ -1,7 +1,6 @@
 package com.ms.login.model;
 
-import com.ms.login.record.DataToListBarber;
-import com.ms.login.record.DataToUpdateBarber;
+import com.ms.login.record.ListBarberDTO;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -19,13 +18,13 @@ import java.time.LocalDateTime;
 public class Barber {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long barberId;
 
     @Column
     @NotBlank
     private String name;
 
-    @Column
+    @Column(unique = true)
     @NotBlank
     private String instagram;
 
@@ -56,7 +55,7 @@ public class Barber {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public DataToListBarber updateData(DataToUpdateBarber data) {
+    public ListBarberDTO updateBarber(ListBarberDTO data) {
         if(data.name() != null && !data.name().isEmpty()){
             this.setName(data.name());
         }
@@ -65,8 +64,8 @@ public class Barber {
             this.setPhoneNumber(data.phoneNumber());
         }
 
-        if(data.username() != null && !data.username().isEmpty()){
-            this.setInstagram(data.username());
+        if(data.instagram() != null && !data.instagram().isEmpty()){
+            this.setInstagram(data.instagram());
         }
 
         if(data.style() != null && !data.style().isEmpty()){
@@ -75,6 +74,6 @@ public class Barber {
 
         this.updatedAt = LocalDateTime.now();
 
-        return new DataToListBarber(this.getId(), this.getName(), this.getInstagram(), this.getStyle(), this.getPhoneNumber());
+        return new ListBarberDTO(this.getBarberId(), this.getName(), this.getInstagram(), this.getStyle(), this.getPhoneNumber());
     }
 }

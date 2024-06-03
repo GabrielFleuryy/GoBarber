@@ -1,10 +1,11 @@
 package com.ms.login.controller;
 
 import com.ms.login.model.Customer;
-import com.ms.login.record.DataToListCustomer;
-import com.ms.login.record.DataToUpdateCustomer;
-import com.ms.login.record.CustomerRecord;
+import com.ms.login.record.ListCustomerDTO;
+import com.ms.login.record.CustomerDTO;
+import com.ms.login.record.LoginDTO;
 import com.ms.login.repository.CustomerRepository;
+import com.ms.login.service.AuthService;
 import com.ms.login.service.CustomerService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -23,27 +24,33 @@ public class CustomerController {
 
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private AuthService authService;
 
     @PostMapping("/new-customer")
     @Transactional
-    public ResponseEntity<CustomerRecord> newCustomer(@RequestBody @Valid CustomerRecord customer, UriComponentsBuilder uriBuilder) {
-        var newCustomer = new Customer();
-        BeanUtils.copyProperties(customer, newCustomer);
+    public ResponseEntity<ListCustomerDTO> newCustomer(@RequestBody @Valid CustomerDTO customerDTO, UriComponentsBuilder uriBuilder) {
+        var user = authService.newUser(new LoginDTO(customerDTO.user()));
+        var customer = new Customer();
 
-        var uri = uriBuilder.path("customers/{id}").buildAndExpand(newCustomer.getId()).toUri();
+        BeanUtils.copyProperties(customerDTO, customer);
 
-        return  ResponseEntity.created(uri).body(new CustomerRecord(newCustomer));
+        customer.setUser(user);
+
+        var uri = uriBuilder.path("customers/{id}").buildAndExpand(customer.getCustomerId()).toUri();
+
+        return  ResponseEntity.created(uri).body(customerService.newCustomer(customer));
     }
 
     @GetMapping("/get-customer/{id}")
-    public ResponseEntity<DataToListCustomer> getCustomer(@PathVariable Long id){
+    public ResponseEntity<ListCustomerDTO> getCustomer(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(customerService.getCustomer(id));
     }
 
     @PutMapping("update-customer")
     @Transactional
-        public ResponseEntity<?> updateCustomer(@RequestBody DataToUpdateCustomer dataToUpdateCustomer){
-        return ResponseEntity.ok(customerService.updateCustomer(dataToUpdateCustomer));
+        public ResponseEntity<?> updateCustomer(@RequestBody ListCustomerDTO listCustomerDTO){
+        return ResponseEntity.ok(customerService.updateCustomer(listCustomerDTO));
     }
 
     @DeleteMapping("delete-customer/{id}")

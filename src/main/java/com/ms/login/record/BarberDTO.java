@@ -1,14 +1,12 @@
 package com.ms.login.record;
 
-import com.ms.login.model.Barber;
 import com.ms.login.model.User;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public record BarberRecord(
+public record BarberDTO(
         @NotBlank(message = "{name.required}")
         String name,
 
